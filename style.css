@@ -1,0 +1,46 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: url('images/background.jpg') no-repeat center center fixed;
+    background-size: cover;
+    color: #fff;
+}
+
+header {
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 1rem;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 2rem;
+    color: #ffdf00;
+}
+
+main {
+    padding: 1rem;
+    background-color: rgba(0, 0, 0, 0.6);
+    border-radius: 10px;
+    margin: 1rem;
+}
+
+button, .btn {
+    padding: 0.7rem;
+    margin: 0.5rem;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover, .btn:hover {
+    background-color: #218838;
+}
+
+form label {
+    display: block;
+    margin: 0.5rem 0;
+}

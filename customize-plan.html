@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customize Plan</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Customize Your Plan</h1>
+    </header>
+    <main>
+        <form id="meal-form">
+            <label for="meal-day">Day:</label>
+            <select id="meal-day">
+                <option>Monday</option>
+                <option>Tuesday</option>
+                <option>Wednesday</option>
+                <option>Thursday</option>
+                <option>Friday</option>
+                <option>Saturday</option>
+                <option>Sunday</option>
+            </select>
+            <label for="meal-time">Time:</label>
+            <input type="time" id="meal-time" required>
+            <label for="meal-name">Dish Name:</label>
+            <input type="text" id="meal-name" placeholder="e.g., Oatmeal" required>
+            <label for="meal-photo">Photo:</label>
+            <input type="file" id="meal-photo" accept="image/*" required>
+            <button type="button" onclick="addMeal()">Add Meal</button>
+        </form>
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>
