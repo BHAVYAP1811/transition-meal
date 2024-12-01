@@ -1,3 +1,4 @@
+// Schedule Object (Stored in UTC)
 const schedule = JSON.parse(localStorage.getItem('schedule')) || {
     Monday: [],
     Tuesday: [],
@@ -8,9 +9,28 @@ const schedule = JSON.parse(localStorage.getItem('schedule')) || {
     Sunday: []
 };
 
+// Detect User's Time Zone and Display
+document.getElementById('timezone-display').innerText = `Your time zone: ${Intl.DateTimeFormat().resolvedOptions().timeZone}`;
+
+// Convert Local Time to UTC
+function convertToUTC(localTime) {
+    const localDate = new Date(`1970-01-01T${localTime}:00`);
+    return new Date(localDate.getTime() - localDate.getTimezoneOffset() * 60000)
+        .toISOString()
+        .split("T")[1]
+        .slice(0, 5); // Return UTC time as HH:mm
+}
+
+// Convert UTC to Local Time
+function convertToLocal(utcTime) {
+    const utcDate = new Date(`1970-01-01T${utcTime}:00Z`);
+    return utcDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+}
+
+// Add Meal with Time Zone Awareness
 function addMeal() {
     const day = document.getElementById("meal-day").value;
-    const time = document.getElementById("meal-time").value;
+    const time = document.getElementById("meal-time").value; // User's local time
     const name = document.getElementById("meal-name").value;
     const photoInput = document.getElementById("meal-photo");
     const photo = photoInput.files[0];
@@ -19,7 +39,7 @@ function addMeal() {
         const reader = new FileReader();
         reader.onload = function (e) {
             const meal = {
-                time,
+                time: convertToUTC(time), // Save time in UTC
                 name,
                 photo: e.target.result
             };
@@ -34,6 +54,7 @@ function addMeal() {
     }
 }
 
+// Load Schedule and Convert UTC to Local Time
 function loadSchedule() {
     const container = document.getElementById("plan-container");
     container.innerHTML = '';
@@ -43,9 +64,10 @@ function loadSchedule() {
             const daySection = document.createElement("div");
             daySection.innerHTML = `<h3>${day}</h3>`;
             dayPlan.forEach(meal => {
+                const localTime = convertToLocal(meal.time); // Convert UTC to Local Time
                 const mealItem = document.createElement("div");
                 mealItem.innerHTML = `
-                    <p>${meal.time} - ${meal.name}</p>
+                    <p>${localTime} - ${meal.name}</p>
                     <img src="${meal.photo}" alt="${meal.name}" style="width: 100px; height: 100px;">
                 `;
                 daySection.appendChild(mealItem);
@@ -53,30 +75,4 @@ function loadSchedule() {
             container.appendChild(daySection);
         }
     }
-}
-
-function exportToCalendar() {
-    let icsContent = "BEGIN:VCALENDAR\nVERSION:2.0\nCALSCALE:GREGORIAN\n";
-    for (const day in schedule) {
-        schedule[day].forEach(meal => {
-            icsContent += `
-BEGIN:VEVENT
-SUMMARY:${meal.name}
-DESCRIPTION:Scheduled Meal
-DTSTART:${new Date().toISOString().replace(/[-:]/g, '').split('.')[0]}
-DTEND:${new Date().toISOString().replace(/[-:]/g, '').split('.')[0]}
-END:VEVENT
-`;
-        });
-    }
-    icsContent += "END:VCALENDAR";
-    const blob = new Blob([icsContent], { type: "text/calendar" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = "diet-plan.ics";
-    link.click();
-}
-
-if (location.pathname.includes("view-plan.html")) {
-    loadSchedule();
 }
